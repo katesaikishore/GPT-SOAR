@@ -1,2 +1,2 @@
 # ChatGPT-IRT
-We have many Incident Response Team where when a cyber attack happens the Incident Response Team will reach, We are trying to use ChatGPT AI system and make it to act as the Incident Response Tool. Which makes the task automatic and helps to avoid the attack more deeper.
+We have Incident Response Team in the companies, where when a cyber attack happens the Incident Response Team will react to the situation and accordingly they will chage the configurations and measures of the network. As the same, We are trying to use ChatGPT AI system and make it to act as the Incident Response Tool. Which makes the task automatic and helps to avoid the attack more deeper.
