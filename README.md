@@ -3,10 +3,12 @@ The use of a SOAR (Security Orchestration, Automation, and Response) platform is
 
 Things to be built:
 
-[] Incident Management
-[] Orchestration and Automation
-[] Threat Intelligence Integration
-[] Playbook Creation
-[] Collaboration and Communication
-[] Reporting and Metrics
+[ ] Incident Management <br/>
+[ ] Orchestration and Automation <br/>
+[ ] Threat Intelligence Integration <br/>
+[ ] Playbook Creation <br/>
+[ ] Collaboration and Communication <br/>
+[ ] Reporting and Metrics <br/>
 
+Incident Management:
+First step of the SOAR Platform is the Incident Management where there should be the IDS/IPS.
