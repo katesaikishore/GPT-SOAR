@@ -14,5 +14,9 @@
 */
 
 $router->get('/', function () use ($router) {
+    // Cache::flush();
     return $router->app->version();
 });
+$router->get('data', [
+    'as' => '/data', 'uses' => 'DataController@index'
+]);

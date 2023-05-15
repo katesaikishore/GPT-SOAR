@@ -84,6 +84,7 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         'M' => 
         array (
             'Monolog\\' => 8,
+            'MVar\\LogParser\\' => 15,
         ),
         'L' => 
         array (
@@ -125,6 +126,7 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         'F' => 
         array (
             'Fruitcake\\Cors\\' => 15,
+            'Flow\\JSONPath\\' => 14,
             'FastRoute\\' => 10,
             'Faker\\' => 6,
         ),
@@ -293,6 +295,10 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'MVar\\LogParser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mvar/log-parser/src',
+        ),
         'Laravel\\SerializableClosure\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/serializable-closure/src',
@@ -319,9 +325,9 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/conditionable',
-            1 => __DIR__ . '/..' . '/illuminate/macroable',
-            2 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
+            1 => __DIR__ . '/..' . '/illuminate/conditionable',
+            2 => __DIR__ . '/..' . '/illuminate/macroable',
             3 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Session\\' => 
@@ -412,6 +418,10 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         array (
             0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
         ),
+        'Flow\\JSONPath\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/softcreatr/jsonpath/src',
+        ),
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
@@ -482,6 +492,7 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         'App\\Events\\ExampleEvent' => __DIR__ . '/../..' . '/app/Events/ExampleEvent.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\DataController' => __DIR__ . '/../..' . '/app/Http/Controllers/DataController.php',
         'App\\Http\\Controllers\\ExampleController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExampleController.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\ExampleMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/ExampleMiddleware.php',
@@ -1322,6 +1333,18 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         'FastRoute\\RouteCollector' => __DIR__ . '/..' . '/nikic/fast-route/src/RouteCollector.php',
         'FastRoute\\RouteParser' => __DIR__ . '/..' . '/nikic/fast-route/src/RouteParser.php',
         'FastRoute\\RouteParser\\Std' => __DIR__ . '/..' . '/nikic/fast-route/src/RouteParser/Std.php',
+        'Flow\\JSONPath\\AccessHelper' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/AccessHelper.php',
+        'Flow\\JSONPath\\Filters\\AbstractFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/AbstractFilter.php',
+        'Flow\\JSONPath\\Filters\\IndexFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/IndexFilter.php',
+        'Flow\\JSONPath\\Filters\\IndexesFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/IndexesFilter.php',
+        'Flow\\JSONPath\\Filters\\QueryMatchFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/QueryMatchFilter.php',
+        'Flow\\JSONPath\\Filters\\QueryResultFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/QueryResultFilter.php',
+        'Flow\\JSONPath\\Filters\\RecursiveFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/RecursiveFilter.php',
+        'Flow\\JSONPath\\Filters\\SliceFilter' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/Filters/SliceFilter.php',
+        'Flow\\JSONPath\\JSONPath' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/JSONPath.php',
+        'Flow\\JSONPath\\JSONPathException' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/JSONPathException.php',
+        'Flow\\JSONPath\\JSONPathLexer' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/JSONPathLexer.php',
+        'Flow\\JSONPath\\JSONPathToken' => __DIR__ . '/..' . '/softcreatr/jsonpath/src/JSONPathToken.php',
         'Fruitcake\\Cors\\CorsService' => __DIR__ . '/..' . '/fruitcake/php-cors/src/CorsService.php',
         'Fruitcake\\Cors\\Exceptions\\InvalidOptionException' => __DIR__ . '/..' . '/fruitcake/php-cors/src/Exceptions/InvalidOptionException.php',
         'GrahamCampbell\\ResultType\\Error' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Error.php',
@@ -2353,6 +2376,12 @@ class ComposerStaticInit0b7474fc74ac5e4ee717ab5ee4863600
         'Laravel\\SerializableClosure\\Support\\ReflectionClosure' => __DIR__ . '/..' . '/laravel/serializable-closure/src/Support/ReflectionClosure.php',
         'Laravel\\SerializableClosure\\Support\\SelfReference' => __DIR__ . '/..' . '/laravel/serializable-closure/src/Support/SelfReference.php',
         'Laravel\\SerializableClosure\\UnsignedSerializableClosure' => __DIR__ . '/..' . '/laravel/serializable-closure/src/UnsignedSerializableClosure.php',
+        'MVar\\LogParser\\AbstractLineParser' => __DIR__ . '/..' . '/mvar/log-parser/src/AbstractLineParser.php',
+        'MVar\\LogParser\\Exception\\MatchException' => __DIR__ . '/..' . '/mvar/log-parser/src/Exception/MatchException.php',
+        'MVar\\LogParser\\Exception\\ParserException' => __DIR__ . '/..' . '/mvar/log-parser/src/Exception/ParserException.php',
+        'MVar\\LogParser\\LineParserInterface' => __DIR__ . '/..' . '/mvar/log-parser/src/LineParserInterface.php',
+        'MVar\\LogParser\\LogIterator' => __DIR__ . '/..' . '/mvar/log-parser/src/LogIterator.php',
+        'MVar\\LogParser\\SimpleParser' => __DIR__ . '/..' . '/mvar/log-parser/src/SimpleParser.php',
         'Mockery' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegrationAssertPostConditions' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegrationAssertPostConditions.php',

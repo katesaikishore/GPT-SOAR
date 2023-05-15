@@ -2645,6 +2645,55 @@
             "install-path": "../monolog/monolog"
         },
         {
+            "name": "mvar/log-parser",
+            "version": "v1.1.0",
+            "version_normalized": "1.1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mvar/log-parser.git",
+                "reference": "56e252e786695f526e9cc274b9ec36189f436ed7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mvar/log-parser/zipball/56e252e786695f526e9cc274b9ec36189f436ed7",
+                "reference": "56e252e786695f526e9cc274b9ec36189f436ed7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "mvar/apache2-log-parser": "Allows to easily parse Apache web server log files"
+            },
+            "time": "2017-06-13T18:59:38+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "MVar\\LogParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mantas Varatiejus",
+                    "email": "var.mantas@gmail.com"
+                }
+            ],
+            "description": "Universal log parser",
+            "support": {
+                "issues": "https://github.com/mvar/log-parser/issues",
+                "source": "https://github.com/mvar/log-parser/tree/master"
+            },
+            "install-path": "../mvar/log-parser"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.11.1",
             "version_normalized": "1.11.1.0",
@@ -5003,6 +5052,77 @@
                 }
             ],
             "install-path": "../sebastian/version"
+        },
+        {
+            "name": "softcreatr/jsonpath",
+            "version": "0.8.2",
+            "version_normalized": "0.8.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SoftCreatR/JSONPath.git",
+                "reference": "3a6108aa78e4944ea7d8dd846f9ae75a080b007b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SoftCreatR/JSONPath/zipball/3a6108aa78e4944ea7d8dd846f9ae75a080b007b",
+                "reference": "3a6108aa78e4944ea7d8dd846f9ae75a080b007b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.0"
+            },
+            "replace": {
+                "flow/jsonpath": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6",
+                "roave/security-advisories": "dev-latest"
+            },
+            "time": "2023-02-12T18:53:17+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Flow\\JSONPath\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Frank",
+                    "email": "stephen@flowsa.com",
+                    "homepage": "https://prismaticbytes.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sascha Greuel",
+                    "email": "hello@1-2.dev",
+                    "homepage": "https://1-2.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "JSONPath implementation for parsing, searching and flattening arrays",
+            "support": {
+                "email": "hello@1-2.dev",
+                "forum": "https://github.com/SoftCreatR/JSONPath/discussions",
+                "issues": "https://github.com/SoftCreatR/JSONPath/issues",
+                "source": "https://github.com/SoftCreatR/JSONPath"
+            },
+            "funding": [
+                {
+                    "url": "https://ecologi.com/softcreatr?r=61212ab3fc69b8eb8a2014f4",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/softcreatr",
+                    "type": "github"
+                }
+            ],
+            "install-path": "../softcreatr/jsonpath"
         },
         {
             "name": "symfony/console",
