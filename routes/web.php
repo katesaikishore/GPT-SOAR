@@ -20,3 +20,9 @@ $router->get('/', function () use ($router) {
 $router->get('data', [
     'as' => '/data', 'uses' => 'DataController@index'
 ]);
+$router->get('directory', [
+    'as' => '/directory', 'uses' => 'DirectoryController@index'
+]);
+$router->get('ai', [
+    'as' => '/ai', 'uses' => 'ExampleController@index'
+]);
