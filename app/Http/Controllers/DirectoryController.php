@@ -70,7 +70,7 @@ class DirectoryController extends Controller
                                 echo "Directory Path not found.";
                             }
                             
-                            $apiKey = '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';
+                            $apiKey = '';
                             $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
                     
                             // Get all file paths in the directory and its subdirectories
