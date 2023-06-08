@@ -19,62 +19,51 @@ class DirectoryController extends Controller
         $response = $client->request('GET', 'http://localhost:8081/JSON/alert/view/alertsByRisk/?apikey=qe18gslcka4doa484bq7sb97ri&url=&recurse='); 
         $data = json_decode($response->getBody());
         // dd($data->alertsByRisk);
-        // $variable = $data->alertsByRisk; 
-
-        // dd($variable[2]);
-
-        // $data = json_decode($json, true);
-        foreach ($data->alertsByRisk as $alerts) {
-            // dd($alerts);
-            foreach ($alerts as $risk => $entries) {
-                // dd($entries);
-                foreach ($entries as $entry) {
-                    // dd($entry);
-                    foreach ($entry as $vulnerability => $vulnerabilityEntries) {
-                        // dd($vulnerabilityEntries);
-                        foreach ($vulnerabilityEntries as $vulnerabilityEntry) {
-                            // dd($vulnerabilityEntry);
-                            $url = $vulnerabilityEntry->url;
+        $data = $data->alertsByRisk[3];
+        $urls = $this->extractUrls($data);
+        // dd($urls);
+        foreach($urls as $url){
+                            var_dump($url);
                             $params = parse_url($url, PHP_URL_QUERY);
                             parse_str($params, $query);
-                            var_dump($url);
-                            // dd($url);
-                            // echo "URL: " . $url . "\n";
-                            // echo "URL Parameters:\n";
-                            // print_r($query);
-                            // echo "\n";
                             $urlParts = parse_url($url);
                             // dd($urlParts);
+                            // var_dump($urlParts);
                             $urlpath= $urlParts['path'];
                             $index = "index.php";
-                            if($urlParts['path'] == "/index.php"){ 
+                            if (strpos($urlParts['path'], ".php") === false) {
                                 
                             $filePath = "/var/www/html$urlpath$index";
-                            // dd($filePath);
-                            }else{
-                            $filePath = "/var/www/html$urlpath";
-                            // dd($filePath);
-                            }
-                            // dd($filePath);
+                            // var_dump($filePath);
                             $fileContents = file_get_contents($filePath);
                     
                             // Define the regular expression pattern
                             $pattern = "/require_once\s+DVWA_WEB_PAGE_TO_ROOT\s*\.\s*\"(.*?)\";/";
-                    
+            
                             // Perform preg_match on the file contents
                             if (preg_match($pattern, $fileContents, $matches)) {
                                 $filePath = $matches[1];
-                                $directoryPath = dirname($filePath);
-                                echo "Directory Path: " . $directoryPath;
+                                $directoryPath = dirname("/var/www/html/$filePath");
+                                // dd($directoryPath);
+                                // echo "Directory Path: " . $directoryPath;
+                                $inputFiles = $this->getFilesRecursively($directoryPath);
                             } else {
-                                echo "Directory Path not found.";
+                                // echo "Directory Path not found.";
                             }
+                            }else{
+                            $directoryPath = "/var/www/html$urlpath";
+                            // echo "Directory Path: " . $directoryPath;
+                            $inputFiles = $directoryPath;
+                            }
+                            // var_dump($inputFiles);
+                          
+                          
                             
                             $apiKey = '';
-                            $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
+                            // $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
                     
                             // Get all file paths in the directory and its subdirectories
-                            $inputFiles = $this->getFilesRecursively($directoryPath);
+    
                     
                             $client = new Client([
                                 'headers' => [
@@ -82,7 +71,8 @@ class DirectoryController extends Controller
                                     'Authorization' => 'Bearer ' . $apiKey,
                                 ],
                             ]);
-                    
+                            // dd($inputFiles);
+                            if (is_array($inputFiles) || is_object($inputFiles)) {
                             foreach ($inputFiles as $filePath) {
                                 // Read the contents of the file
                                 $data = file_get_contents($filePath);
@@ -111,29 +101,56 @@ class DirectoryController extends Controller
                                 ]);
                     
                                 $result = json_decode($chat);
-                                // dd($result);
+                                
+                                $fixedCode = $result->choices[0]->message->content;
+                                // dd($fixedCode);
+                                // Extract the code from the completion response
+                                $code = $this->extractCodeFromCompletion($fixedCode);
+                                dd($code);
+                                // Write the completion response to the file, replacing its contents
+                                file_put_contents($filePath, $code);
+                            }
+                        }else{
+                            $data = file_get_contents($inputFiles);
+                                echo $inputFiles;
+                                // Create the prompt for the OpenAI API
+                                $prompt = [
+                                    [
+                                        "role" => "user",
+                                        "content" => "Find the vulnerability in the code and dont give me any explanation only give me the updated code:",
+                                    ],
+                                    [
+                                        'role' => 'user',
+                                        'content' => $data,
+                                    ],
+                                ];
+                    
+                                $openAi = new OpenAi($apiKey);
+                    
+                                $chat = $openAi->chat([
+                                    'model' => 'gpt-3.5-turbo',
+                                    'messages' => $prompt,
+                                    'temperature' => 0.7,
+                                    'max_tokens' => 900,
+                                    // 'frequency_penalty' => 0,
+                                    // 'presence_penalty' => 0,
+                                ]);
+                    
+                                $result = json_decode($chat);
+                                // dd($result->choices[0]->message->content);
                                 $fixedCode = $result->choices[0]->message->content;
                                 // dd($fixedCode);
                                 // Extract the code from the completion response
                                 $code = $this->extractCodeFromCompletion($fixedCode);
                                 // dd($code);
                                 // Write the completion response to the file, replacing its contents
-                                file_put_contents($filePath, $code);
-                            }
-                    
-                            return 'All files processed.';
-
+                                file_put_contents($inputFiles, $code);
                         }
+                    
+                            echo 'All files processed.';
                     }
-                }
-            }
-        }
-        // dd($data);
-
-        // $key = key($vara->High[0]);
-
-        // $url = $vara->High[0]->$key[0]->url;
     }
+
 
     /**
      * Recursively get all files in a directory and its subdirectories.
@@ -176,4 +193,17 @@ class DirectoryController extends Controller
         }
         return '';
     }
+
+    private function extractUrls($data) {
+        $urls = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value) || is_object($value)) {
+                $urls = array_merge($urls, $this->extractUrls($value));
+            } elseif ($key === 'url') {
+                $urls[] = $value;
+            }
+        }
+        return $urls;
+    }
+    
 }
