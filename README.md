@@ -17,3 +17,5 @@ First step of the SOAR Platform is the Incident Management where there should be
 Supporting Operating System:
 
 ![windows](https://github.com/katesaikishore/GPT-SOAR/assets/10182914/ff782a97-b3cd-4ac0-80a9-1b0535c52e57) <b>Windows</b>
+![linux](https://github.com/katesaikishore/GPT-SOAR/assets/10182914/44b79ea7-80c9-4786-ac0e-321072c8db35)   <b>Linux</b>
+
