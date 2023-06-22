@@ -9,6 +9,7 @@ Things to be built:
 [ ] Playbook Creation <br/>
 [ ] Collaboration and Communication <br/>
 [ ] Reporting and Metrics <br/>
+[ ] Remove the sensitive information like API Keys, passwords before ChatGPT analyse the code <br/>
 
 Incident Management:
 First step of the SOAR Platform is the Incident Management where there should be the IDS/IPS.
