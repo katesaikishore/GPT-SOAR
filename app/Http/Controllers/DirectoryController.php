@@ -83,9 +83,9 @@ class DirectoryController extends Controller
 
                     $filePath = "/var/www/html$urlpath$index";
                     // dd($filePath);
-                    // $subDirectories = glob($filePath . '/*', GLOB_ONLYDIR); 
+                    $subDirectories = glob($filePath . '/*', GLOB_ONLYDIR); 
                     // dd($subDirectories);
-                    // if (($subDirectories)){
+                    if (empty($subDirectories)){
 
                         $fileContents = file_get_contents($filePath);
 
@@ -101,7 +101,7 @@ class DirectoryController extends Controller
                             $inputFiles = $this->getFilesRecursively($directoryPath);
                         } else {
                             echo "Directory Path not found.";
-                        // }
+                        }
                     }
                 } else {
                     // Retrieve the directories within the main directory
@@ -114,11 +114,11 @@ class DirectoryController extends Controller
                     // echo "subdirectory";
                     // }
                 }
-                // var_dump($inputFiles);
+                var_dump($inputFiles);
 
 
 
-                $apiKey = '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';
+                $apiKey = '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';
                 // $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
 
                 // Get all file paths in the directory and its subdirectories
@@ -138,12 +138,13 @@ class DirectoryController extends Controller
                         foreach ($inputFiles as $filePath) {
                             // Read the contents of the file
                             if (is_string($filePath)) {
-                                $trimmedFilePath = rtrim($filePath, '.');
+                                $filePath = rtrim($filePath, '.');
                             $data = file_get_contents($filePath);
 
                             // dd(countTokens($data));
 
                             // Split the code if token size exceeds 4000
+                            echo countTokens($data);  
                             if (countTokens($data) > 4000) {
                                 $codeParts = splitCodeIntoParts($data, 4000);
 
@@ -166,7 +167,7 @@ class DirectoryController extends Controller
                                         'model' => 'gpt-3.5-turbo',
                                         'messages' => $prompt,
                                         'temperature' => 0.7,
-                                        'max_tokens' => 900,
+                                        'max_tokens' => 2500,
                                         // 'frequency_penalty' => 0,
                                         // 'presence_penalty' => 0,
                                     ]);
@@ -185,10 +186,12 @@ class DirectoryController extends Controller
                                 }
                             } else {
                                 echo "hiii";
-                                if (countTokens($data) > 4000) {
-                                    $codeParts = splitCodeIntoParts($data, 4000);
+                                // echo countTokens($data);
+                                // if (countTokens($data) < 4000) {
+                                //     // echo "just";
+                                //     $codeParts = splitCodeIntoParts($data, 4000);
 
-                                    foreach ($codeParts as $codePart) {
+                                //     foreach ($codeParts as $codePart) {
                                         // Create the prompt for the OpenAI API
                                         $prompt = [
                                             [
@@ -207,7 +210,7 @@ class DirectoryController extends Controller
                                             'model' => 'gpt-3.5-turbo',
                                             'messages' => $prompt,
                                             'temperature' => 0.7,
-                                            'max_tokens' => 900,
+                                            'max_tokens' => 2500,
                                             // 'frequency_penalty' => 0,
                                             // 'presence_penalty' => 0,
                                         ]);
@@ -223,8 +226,8 @@ class DirectoryController extends Controller
                                         } else {
                                             dd($result);
                                         }
-                                    }
-                                }
+                                //     }
+                                // }
                             }
                         }
                     }
@@ -253,13 +256,13 @@ class DirectoryController extends Controller
                             $data = file_get_contents($decodedUrl);
 
                             // echo $inputFiles;
-
+                            echo countTokens($data);
                             // Split the code if token size exceeds 4000
                             if (countTokens($data) > 4000) {
                                 $codeParts = splitCodeIntoParts($data, 4000);
 
                                 foreach ($codeParts as $codePart) {
-                                    dd($codePart);
+                                    // dd($codePart);
                                     // Create the prompt for the OpenAI API
                                     $prompt = [
                                         [
@@ -278,7 +281,7 @@ class DirectoryController extends Controller
                                         'model' => 'gpt-3.5-turbo',
                                         'messages' => $prompt,
                                         'temperature' => 0.7,
-                                        'max_tokens' => 900,
+                                        'max_tokens' => 2500,
                                         // 'frequency_penalty' => 0,
                                         // 'presence_penalty' => 0,
                                     ]);
@@ -292,10 +295,10 @@ class DirectoryController extends Controller
                                     file_put_contents($inputFiles, $code);
                                 }
                             } else {
-                                if (countTokens($data) > 4000) {
-                                    $codeParts = splitCodeIntoParts($data, 4000);
+                                // if (countTokens($data) < 4000) {
+                                //     $codeParts = splitCodeIntoParts($data, 4000);
 
-                                    foreach ($codeParts as $codePart) {
+                                //     foreach ($codeParts as $codePart) {
                                         // Create the prompt for the OpenAI API
                                         $prompt = [
                                             [
@@ -314,7 +317,7 @@ class DirectoryController extends Controller
                                             'model' => 'gpt-3.5-turbo',
                                             'messages' => $prompt,
                                             'temperature' => 0.7,
-                                            'max_tokens' => 900,
+                                            'max_tokens' => 2500,
                                             // 'frequency_penalty' => 0,
                                             // 'presence_penalty' => 0,
                                         ]);
@@ -327,8 +330,8 @@ class DirectoryController extends Controller
                                         // Write the completion response to the file, replacing its contents
                                         file_put_contents($inputFiles, $code);
                                     }
-                                }
-                            }
+                            //     }
+                            // }
                         }
                     }
                 } else {
@@ -339,6 +342,7 @@ class DirectoryController extends Controller
                 }
 
             }
+            sleep(5);
             echo 'All files processed.';
 
         }
