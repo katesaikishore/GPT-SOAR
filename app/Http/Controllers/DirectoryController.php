@@ -82,9 +82,10 @@ class DirectoryController extends Controller
                 if (strpos($urlParts['path'], ".php") === false) {
 
                     $filePath = "/var/www/html$urlpath$index";
-                    // var_dump($filePath);
-                    $subDirectories = glob($filePath . '/*', GLOB_ONLYDIR);
-                    if (($subDirectories)) {
+                    // dd($filePath);
+                    // $subDirectories = glob($filePath . '/*', GLOB_ONLYDIR); 
+                    // dd($subDirectories);
+                    // if (($subDirectories)){
 
                         $fileContents = file_get_contents($filePath);
 
@@ -99,8 +100,8 @@ class DirectoryController extends Controller
                             // echo "Directory Path: " . $directoryPath;
                             $inputFiles = $this->getFilesRecursively($directoryPath);
                         } else {
-                            // echo "Directory Path not found.";
-                        }
+                            echo "Directory Path not found.";
+                        // }
                     }
                 } else {
                     // Retrieve the directories within the main directory
@@ -117,7 +118,7 @@ class DirectoryController extends Controller
 
 
 
-                $apiKey = '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';
+                $apiKey = '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';
                 // $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
 
                 // Get all file paths in the directory and its subdirectories
@@ -133,13 +134,14 @@ class DirectoryController extends Controller
 
 
                 if (isset($inputFiles)) {
-                    rtrim($inputFiles, '.');
                     if (is_array($inputFiles) || is_object($inputFiles)) {
                         foreach ($inputFiles as $filePath) {
                             // Read the contents of the file
+                            if (is_string($filePath)) {
+                                $trimmedFilePath = rtrim($filePath, '.');
                             $data = file_get_contents($filePath);
 
-                            echo $filePath;
+                            // dd(countTokens($data));
 
                             // Split the code if token size exceeds 4000
                             if (countTokens($data) > 4000) {
@@ -225,6 +227,7 @@ class DirectoryController extends Controller
                                 }
                             }
                         }
+                    }
                     } else {
                         $decodedUrl = urldecode($inputFiles);
 
@@ -245,7 +248,7 @@ class DirectoryController extends Controller
 
                         $inputFiles = preg_replace('/[^a-zA-Z0-9\/]/', '', $decodedUrl);
                         // var_dump($dec);
-// Check if the URL points to a file
+                        // Check if the URL points to a file
                         if (is_file($decodedUrl)) {
                             $data = file_get_contents($decodedUrl);
 
