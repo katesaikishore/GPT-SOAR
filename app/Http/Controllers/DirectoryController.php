@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Controllers;
+
 use GuzzleHttp\Client;
 use Orhanerday\OpenAi\OpenAi;
 
@@ -14,33 +15,36 @@ class DirectoryController extends Controller
      */
     public function index()
     {
-        function countTokens($code) {
+        function countTokens($code)
+        {
             // Remove comments and whitespace
             $code = removeComments($code);
             $code = preg_replace('/\s+/', ' ', $code);
-            
+
             // Count tokens
             $tokens = str_word_count($code);
-            
+
             return $tokens;
         }
-        function removeComments($code) {
+        function removeComments($code)
+        {
             $code = preg_replace('/\/\*.*?\*\//s', '', $code); // Remove /* ... */ comments
             $code = preg_replace('/\/\/.*?$\R?/m', '', $code); // Remove // ... comments
-            
+
             return $code;
         }
-    
-        
-        function splitCodeIntoParts($code, $maxTokens) {
+
+
+        function splitCodeIntoParts($code, $maxTokens)
+        {
             $parts = [];
             $currentPart = '';
             $tokenCount = 0;
-        
+
             $lines = explode("\n", $code);
             foreach ($lines as $line) {
                 $lineTokenCount = countTokens($line);
-        
+
                 if ($tokenCount + $lineTokenCount <= $maxTokens) {
                     $currentPart .= $line . "\n";
                     $tokenCount += $lineTokenCount;
@@ -50,139 +54,139 @@ class DirectoryController extends Controller
                     $tokenCount = $lineTokenCount;
                 }
             }
-        
+
             // Add the last part
             $parts[] = $currentPart;
-        
+
             return $parts;
         }
-      
+
         $client = new \GuzzleHttp\Client();
-        $response = $client->request('GET', 'http://localhost:8081/JSON/alert/view/alertsByRisk/?apikey=qe18gslcka4doa484bq7sb97ri&url=&recurse='); 
+        $response = $client->request('GET', 'http://localhost:8081/JSON/alert/view/alertsByRisk/?apikey=qe18gslcka4doa484bq7sb97ri&url=&recurse=');
         $data = json_decode($response->getBody());
         // dd($data->alertsByRisk);
         $data = $data->alertsByRisk[2];
         // dd($data);
         $urls = $this->extractUrls($data);
         // dd($urls);
-        foreach($urls as $url){
-                            // var_dump($url);
-                            $params = parse_url($url, PHP_URL_QUERY);
-                            parse_str($params, $query);
-                            $urlParts = parse_url($url);
-                            // dd($urlParts);
-                            // var_dump($urlParts);
-                            if(isset($urlParts['path'])){
-                            $urlpath= $urlParts['path'];
-                            $index = "index.php";
-                            if (strpos($urlParts['path'], ".php") === false) {
-                                
-                            $filePath = "/var/www/html$urlpath$index";
-                            // var_dump($filePath);
-                            $subDirectories = glob($filePath . '/*', GLOB_ONLYDIR);
-                            if (($subDirectories)) {
+        foreach ($urls as $url) {
+            // var_dump($url);
+            $params = parse_url($url, PHP_URL_QUERY);
+            parse_str($params, $query);
+            $urlParts = parse_url($url);
+            // dd($urlParts);
+            // var_dump($urlParts);
+            if (isset($urlParts['path'])) {
+                $urlpath = $urlParts['path'];
+                $index = "index.php";
+                if (strpos($urlParts['path'], ".php") === false) {
 
-                            $fileContents = file_get_contents($filePath);
-                    
-                            // Define the regular expression pattern
-                            $pattern = "/require_once\s+DVWA_WEB_PAGE_TO_ROOT\s*\.\s*\"(.*?)\";/";
-            
-                            // Perform preg_match on the file contents
-                            if (preg_match($pattern, $fileContents, $matches)) {
-                                $filePath = $matches[1];
-                                $directoryPath = dirname("/var/www/html/$filePath");
-                                // dd($directoryPath);
-                                // echo "Directory Path: " . $directoryPath;
-                                $inputFiles = $this->getFilesRecursively($directoryPath);
-                            } else {
-                                // echo "Directory Path not found.";
-                            }
-                            }
-                            }else{
-                                    // Retrieve the directories within the main directory
-                            // $subDirectories = glob($directoryPath . '/*', GLOB_ONLYDIR);
-                            //  if (($subDirectories)) {
-                            $directoryPath = "/var/www/html$urlpath";
+                    $filePath = "/var/www/html$urlpath$index";
+                    // var_dump($filePath);
+                    $subDirectories = glob($filePath . '/*', GLOB_ONLYDIR);
+                    if (($subDirectories)) {
+
+                        $fileContents = file_get_contents($filePath);
+
+                        // Define the regular expression pattern
+                        $pattern = "/require_once\s+DVWA_WEB_PAGE_TO_ROOT\s*\.\s*\"(.*?)\";/";
+
+                        // Perform preg_match on the file contents
+                        if (preg_match($pattern, $fileContents, $matches)) {
+                            $filePath = $matches[1];
+                            $directoryPath = dirname("/var/www/html/$filePath");
+                            // dd($directoryPath);
                             // echo "Directory Path: " . $directoryPath;
-                            $inputFiles = $directoryPath;
-                            // }else{
-                                // echo "subdirectory";
-                            // }
+                            $inputFiles = $this->getFilesRecursively($directoryPath);
+                        } else {
+                            // echo "Directory Path not found.";
                         }
-                            // var_dump($inputFiles);
-                          
-                          
-                            
-                            $apiKey = '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';
-                            // $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
-                    
-                            // Get all file paths in the directory and its subdirectories
-    
-                            
-                            $client = new Client([
-                                'headers' => [
-                                    'Content-Type' => 'application/json',
-                                    'Authorization' => 'Bearer ' . $apiKey,
-                                ],
-                            ]);
-                            // dd($inputFiles);
-                            
+                    }
+                } else {
+                    // Retrieve the directories within the main directory
+                    // $subDirectories = glob($directoryPath . '/*', GLOB_ONLYDIR);
+                    //  if (($subDirectories)) {
+                    $directoryPath = "/var/www/html$urlpath";
+                    // echo "Directory Path: " . $directoryPath;
+                    $inputFiles = $directoryPath;
+                    // }else{
+                    // echo "subdirectory";
+                    // }
+                }
+                // var_dump($inputFiles);
 
-                            if (isset($inputFiles)) {
-                            rtrim($inputFiles, '.');
-                            if (is_array($inputFiles) || is_object($inputFiles)) {
-                                foreach ($inputFiles as $filePath) {
-                                    // Read the contents of the file
-                                    $data = file_get_contents($filePath);
-                                    
-                                    echo $filePath;
-                            
-                                    // Split the code if token size exceeds 4000
-                                    if (countTokens($data) > 4000) {
-                                        $codeParts = splitCodeIntoParts($data, 4000);
-                                        
-                                        foreach ($codeParts as $codePart) {
-                                            // Create the prompt for the OpenAI API
-                                            $prompt = [
-                                                [
-                                                    "role" => "user",
-                                                    "content" => "Find the vulnerability in the code and dont give me any explanation only give me the updated code:",
-                                                ],
-                                                [
-                                                    'role' => 'user',
-                                                    'content' => $codePart,
-                                                ],
-                                            ];
-                            
-                                            $openAi = new OpenAi($apiKey);
-                            
-                                            $chat = $openAi->chat([
-                                                'model' => 'gpt-3.5-turbo',
-                                                'messages' => $prompt,
-                                                'temperature' => 0.7,
-                                                'max_tokens' => 900,
-                                                // 'frequency_penalty' => 0,
-                                                // 'presence_penalty' => 0,
-                                            ]);
-                            
-                                            $result = json_decode($chat);
-                                            
-                                            if (isset($result->choices) && is_array($result->choices) && count($result->choices) > 0) {
-                                                $fixedCode = $result->choices[0]->message->content;
-                                                // Extract the code from the completion response
-                                                $code = extractCodeFromCompletion($fixedCode);
-                                                // Write the completion response to the file, replacing its contents
-                                                file_put_contents($filePath, $code);
-                                            } else {
-                                                dd($result);
-                                            }
-                                        }
+
+
+                $apiKey = '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';
+                // $directoryPath = '/var/www/html/vulnerabilities/xss_r/source';
+
+                // Get all file paths in the directory and its subdirectories
+
+
+                $client = new Client([
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer ' . $apiKey,
+                    ],
+                ]);
+                // dd($inputFiles);
+
+
+                if (isset($inputFiles)) {
+                    rtrim($inputFiles, '.');
+                    if (is_array($inputFiles) || is_object($inputFiles)) {
+                        foreach ($inputFiles as $filePath) {
+                            // Read the contents of the file
+                            $data = file_get_contents($filePath);
+
+                            echo $filePath;
+
+                            // Split the code if token size exceeds 4000
+                            if (countTokens($data) > 4000) {
+                                $codeParts = splitCodeIntoParts($data, 4000);
+
+                                foreach ($codeParts as $codePart) {
+                                    // Create the prompt for the OpenAI API
+                                    $prompt = [
+                                        [
+                                            "role" => "user",
+                                            "content" => "Find the vulnerability in the code and dont give me any explanation only give me the updated code:",
+                                        ],
+                                        [
+                                            'role' => 'user',
+                                            'content' => $codePart,
+                                        ],
+                                    ];
+
+                                    $openAi = new OpenAi($apiKey);
+
+                                    $chat = $openAi->chat([
+                                        'model' => 'gpt-3.5-turbo',
+                                        'messages' => $prompt,
+                                        'temperature' => 0.7,
+                                        'max_tokens' => 900,
+                                        // 'frequency_penalty' => 0,
+                                        // 'presence_penalty' => 0,
+                                    ]);
+
+                                    $result = json_decode($chat);
+
+                                    if (isset($result->choices) && is_array($result->choices) && count($result->choices) > 0) {
+                                        $fixedCode = $result->choices[0]->message->content;
+                                        // Extract the code from the completion response
+                                        $code = $this->extractCodeFromCompletion($fixedCode);
+                                        // Write the completion response to the file, replacing its contents
+                                        file_put_contents($filePath, $code);
                                     } else {
-                                        echo "hiii";
-                                        if (countTokens($data) > 4000) {
-                                            $codeParts = splitCodeIntoParts($data, 4000);
-                                            
-                                            foreach ($codeParts as $codePart) {
+                                        dd($result);
+                                    }
+                                }
+                            } else {
+                                echo "hiii";
+                                if (countTokens($data) > 4000) {
+                                    $codeParts = splitCodeIntoParts($data, 4000);
+
+                                    foreach ($codeParts as $codePart) {
                                         // Create the prompt for the OpenAI API
                                         $prompt = [
                                             [
@@ -194,9 +198,9 @@ class DirectoryController extends Controller
                                                 'content' => $data,
                                             ],
                                         ];
-                            
+
                                         $openAi = new OpenAi($apiKey);
-                            
+
                                         $chat = $openAi->chat([
                                             'model' => 'gpt-3.5-turbo',
                                             'messages' => $prompt,
@@ -205,91 +209,54 @@ class DirectoryController extends Controller
                                             // 'frequency_penalty' => 0,
                                             // 'presence_penalty' => 0,
                                         ]);
-                            
+
                                         $result = json_decode($chat);
-                                        
+
                                         if (isset($result->choices) && is_array($result->choices) && count($result->choices) > 0) {
                                             $fixedCode = $result->choices[0]->message->content;
                                             // Extract the code from the completion response
                                             $code = $this->extractCodeFromCompletion($fixedCode);
                                             // Write the completion response to the file, replacing its contents
                                             file_put_contents($filePath, $code);
-                                        } 
-                                        else {
+                                        } else {
                                             dd($result);
                                         }
                                     }
                                 }
                             }
                         }
-                            } else {
-                                $decodedUrl = urldecode($inputFiles);
+                    } else {
+                        $decodedUrl = urldecode($inputFiles);
 
-// Get the file extension
-$fileExtension = pathinfo($decodedUrl, PATHINFO_EXTENSION);
+                        // Get the file extension
+                        $fileExtension = pathinfo($decodedUrl, PATHINFO_EXTENSION);
 
-// Remove the file extension from the URL
-$decodedUrlWithoutExtension = substr($decodedUrl, 0, -strlen($fileExtension) - 1);
+                        // Remove the file extension from the URL
+                        $decodedUrlWithoutExtension = substr($decodedUrl, 0, -strlen($fileExtension) - 1);
 
-// Split the URL into segments
-$segments = explode('/', $decodedUrlWithoutExtension);
+                        // Split the URL into segments
+                        $segments = explode('/', $decodedUrlWithoutExtension);
 
-// Remove the last segment
-array_pop($segments);
+                        // Remove the last segment
+                        array_pop($segments);
 
-// Reconstruct the URL
-$decodedUrl = implode('/', $segments);
+                        // Reconstruct the URL
+                        $decodedUrl = implode('/', $segments);
 
-$inputFiles = preg_replace('/[^a-zA-Z0-9\/]/', '', $decodedUrl);
-var_dump($decodedUrl);
+                        $inputFiles = preg_replace('/[^a-zA-Z0-9\/]/', '', $decodedUrl);
+                        // var_dump($dec);
 // Check if the URL points to a file
-if (is_file($decodedUrl)) {
-    $data = file_get_contents($decodedUrl);
+                        if (is_file($decodedUrl)) {
+                            $data = file_get_contents($decodedUrl);
 
-                                // echo $inputFiles;
-                                
-                                // Split the code if token size exceeds 4000
-                                if (countTokens($data) > 4000) {
-                                    $codeParts = splitCodeIntoParts($data, 4000);
-                                    
-                                    foreach ($codeParts as $codePart) {
-                                        dd($codePart);
-                                        // Create the prompt for the OpenAI API
-                                        $prompt = [
-                                            [
-                                                "role" => "user",
-                                                "content" => "Find the vulnerability in the code and dont give me any explanation only give me the updated code:",
-                                            ],
-                                            [
-                                                'role' => 'user',
-                                                'content' => $codePart,
-                                            ],
-                                        ];
-                            
-                                        $openAi = new OpenAi($apiKey);
-                            
-                                        $chat = $openAi->chat([
-                                            'model' => 'gpt-3.5-turbo',
-                                            'messages' => $prompt,
-                                            'temperature' => 0.7,
-                                            'max_tokens' => 900,
-                                            // 'frequency_penalty' => 0,
-                                            // 'presence_penalty' => 0,
-                                        ]);
-                            
-                                        $result = json_decode($chat);
-                                        // dd($result->choices[0]->message->content);
-                                        $fixedCode = $result->choices[0]->message->content;
-                                        // Extract the code from the completion response
-                                        $code = $this->extractCodeFromCompletion($fixedCode);
-                                        // Write the completion response to the file, replacing its contents
-                                        file_put_contents($inputFiles, $code);
-                                    }
-                                } else {
-                                    if (countTokens($data) > 4000) {
-                                        $codeParts = splitCodeIntoParts($data, 4000);
-                                        
-                                        foreach ($codeParts as $codePart) {
+                            // echo $inputFiles;
+
+                            // Split the code if token size exceeds 4000
+                            if (countTokens($data) > 4000) {
+                                $codeParts = splitCodeIntoParts($data, 4000);
+
+                                foreach ($codeParts as $codePart) {
+                                    dd($codePart);
                                     // Create the prompt for the OpenAI API
                                     $prompt = [
                                         [
@@ -298,12 +265,12 @@ if (is_file($decodedUrl)) {
                                         ],
                                         [
                                             'role' => 'user',
-                                            'content' => $data,
+                                            'content' => $codePart,
                                         ],
                                     ];
-                            
+
                                     $openAi = new OpenAi($apiKey);
-                            
+
                                     $chat = $openAi->chat([
                                         'model' => 'gpt-3.5-turbo',
                                         'messages' => $prompt,
@@ -312,34 +279,70 @@ if (is_file($decodedUrl)) {
                                         // 'frequency_penalty' => 0,
                                         // 'presence_penalty' => 0,
                                     ]);
-                            
+
                                     $result = json_decode($chat);
                                     // dd($result->choices[0]->message->content);
                                     $fixedCode = $result->choices[0]->message->content;
                                     // Extract the code from the completion response
-                                    $code = extractCodeFromCompletion($fixedCode);
+                                    $code = $this->extractCodeFromCompletion($fixedCode);
                                     // Write the completion response to the file, replacing its contents
                                     file_put_contents($inputFiles, $code);
+                                }
+                            } else {
+                                if (countTokens($data) > 4000) {
+                                    $codeParts = splitCodeIntoParts($data, 4000);
+
+                                    foreach ($codeParts as $codePart) {
+                                        // Create the prompt for the OpenAI API
+                                        $prompt = [
+                                            [
+                                                "role" => "user",
+                                                "content" => "Find the vulnerability in the code and dont give me any explanation only give me the updated code:",
+                                            ],
+                                            [
+                                                'role' => 'user',
+                                                'content' => $data,
+                                            ],
+                                        ];
+
+                                        $openAi = new OpenAi($apiKey);
+
+                                        $chat = $openAi->chat([
+                                            'model' => 'gpt-3.5-turbo',
+                                            'messages' => $prompt,
+                                            'temperature' => 0.7,
+                                            'max_tokens' => 900,
+                                            // 'frequency_penalty' => 0,
+                                            // 'presence_penalty' => 0,
+                                        ]);
+
+                                        $result = json_decode($chat);
+                                        // dd($result->choices[0]->message->content);
+                                        $fixedCode = $result->choices[0]->message->content;
+                                        // Extract the code from the completion response
+                                        $code = $this->extractCodeFromCompletion($fixedCode);
+                                        // Write the completion response to the file, replacing its contents
+                                        file_put_contents($inputFiles, $code);
+                                    }
                                 }
                             }
                         }
                     }
+                } else {
+                    // Handle the case when the URL points to a directory
+                    // For example, display an error message or take appropriate action
+                    $data = null;
+                    // Add your error handling logic here
                 }
-            } else {
-                // Handle the case when the URL points to a directory
-                // For example, display an error message or take appropriate action
-                $data = null;
-                // Add your error handling logic here
+
             }
-                            
-                }
-                            echo 'All files processed.';
-                            
-                    }
-                  
+            echo 'All files processed.';
+
+        }
+
     }
-    
- 
+
+
     /**
      * Recursively get all files in a directory and its subdirectories.
      *
@@ -362,7 +365,7 @@ if (is_file($decodedUrl)) {
         }
 
         return $files;
-    } 
+    }
 
     /**
      * Extracts code from the completion response.
@@ -381,7 +384,8 @@ if (is_file($decodedUrl)) {
         }
         return '';
     }
-    private function extractUrls($data) {
+    private function extractUrls($data)
+    {
         $urls = [];
         foreach ($data as $key => $value) {
             if (is_array($value) || is_object($value)) {
@@ -392,6 +396,6 @@ if (is_file($decodedUrl)) {
         }
         return $urls;
     }
-    
-    
+
+
 }
